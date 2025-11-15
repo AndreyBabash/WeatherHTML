@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title> Погодний сервіс </title>
+<style>
+    body {
+	  background: linear-gradient(to right, #0cec1f, #7b19a8);
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+	  padding-top: 50px;
+	  padding-right: 30px;
+      padding-bottom: 50px;
+      padding-left: 80px;
+    }
+	h1 {
+		font-size: 48px;
+		background: linear-gradient(to right, #ff7e5f, #feb47b);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+		text-align: center;
+	}
+	
+	h2 {
+		font-size: 40px;
+		background: linear-gradient(to right, #cd6dfd, #24e10c);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		text-shadow: 5px 5px 5px rgba(0, 0, 255, 0.3);
+		text-align: center;
+	}
+	
+	#eCity {
+		font-size: 30px;
+		background: linear-gradient(to right, #31d161, #0c7ee1);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		text-shadow: 5px 5px 5px rgba(150, 100, 255, 0.8);
+		text-align: center;
+		align-self: center;
+	}
+	#weatherBtn{
+		background-color: rgb(22, 220, 75);
+		width: 400px; 
+		height: 50px;
+		color: rgb(164, 17, 222);
+		border: none;
+		padding: 10px 20px;
+		text-align: center;
+		font-size: 30px;
+		border-radius: 10px;
+		cursor: pointer;
+		text-shadow: 2px 2px 4px rgba(7, 75, 31, 0.3);
+		transition: background-color 0.3s ease;
+		align-self: center;
+	}
+	#weatherBtn:hover {
+            background: linear-gradient(to right, #feb47b, #ff7e5f);
+        }
+  </style>
+</head>
+<body>
+<h2>Введіть місто</h2>
+<input type="text" id="eCity" class="form-control" name="eCity" placeholder="Введи місто">
+<div>		
+<div>
+<ul>	
+<input type="button" id="weatherBtn" value="Отримати погоду">						
+<script src="https://code.jquery.com/jquery-2.1.0.js"></script>
+<script>
+	  let ButtonClickHandler = function()
+	  {
+			fetch("https://api.openweathermap.org/data/2.5/weather?q="+$("#eCity").val()+"&appid=ffe6d300f48841172ae985a4d1f3c576", {
+			  method: 'GET'
+			})
+			  .then(response => response.json())
+			  .then(data => {
+				console.log('Success:', data);
+				$('#weatherIcon').remove(); 
+				$('#temp').remove();
+				$('#country').remove();
+				$('#description').remove();
+				$('#description1').remove();
+				$('#error').remove();
+				let degrees = data.main.temp - 273.15;
+				$("body").append("<h1 id='temp'>" + "Температура повітря: " + Math.round(degrees).toString() + " °C" + "</h1>");
+				$("body").append("<h1 id='country'>" + "Країна: " + data.sys.country + "</h1>");
+				for (let i = 0; i < data.weather.length; i++) {
+    				let arrelem = data.weather[i];
+					$("body").append("<h1 id='description'>" + "Опис: " + arrelem.description + "</h1>");
+					$("body").append("<h1 id='description1'>" + "Опис: " + arrelem.main + "</h1>");
+					$("body").append("<img id='weatherIcon' src='http://openweathermap.org/img/wn/" + arrelem.icon + ".png' align=center width=200 height=200>");
+				}	
+			  })
+			  .catch(error => {
+				$("body").append("<h1 id='error'>Помилка!!!</h1>");
+				console.error('Error:', error);
+			  });
+	  };
+	  $("#weatherBtn").click(ButtonClickHandler);
+</script>					
+</body>
+</html>
